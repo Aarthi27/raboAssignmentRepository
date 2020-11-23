@@ -11,13 +11,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.rabo.demo.exception.RecordNotFoundException;
 import com.rabo.demo.model.Person;
 import com.rabo.demo.model.PersonAddress;
+import com.rabo.demo.model.Pet;
 import com.rabo.demo.repository.PersonRepository;
+import com.rabo.demo.repository.PetRepository;
 
 @Service
 public class PersonService {
 
 	@Autowired
 	public PersonRepository personRepo;
+	
+	@Autowired
+	public PetRepository petRepo;
 	
 	public Iterable<Person> getPersonList() {
 		System.out.println("Inside GET MApping");

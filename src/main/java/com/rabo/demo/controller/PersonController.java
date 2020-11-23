@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rabo.demo.exception.RecordNotFoundException;
 import com.rabo.demo.model.Person;
 import com.rabo.demo.model.PersonAddress;
+import com.rabo.demo.model.Pet;
 import com.rabo.demo.repository.PersonRepository;
+import com.rabo.demo.repository.PetRepository;
 import com.rabo.demo.util.PersonService;
 
 @RestController
@@ -27,6 +29,7 @@ public class PersonController {
 
 	@Autowired
 	private PersonService personService;
+	
 
 //	@RequestMapping(value = "/getPersonList", method = RequestMethod.GET)
 	@GetMapping("/getPersonList")
@@ -68,5 +71,5 @@ public class PersonController {
 		List<Person> personList = personService.getRecordByName(name);
 		return personList;
 	}
-
+	
 }
