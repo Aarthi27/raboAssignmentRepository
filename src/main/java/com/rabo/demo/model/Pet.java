@@ -31,7 +31,7 @@ public class Pet {
 	@Column(name = "AGE")
 	public int age;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE, optional=false)
 	@JoinColumn(name = "PERSON_ID")
 //	@JsonIgnore
 	@JsonBackReference
@@ -65,6 +65,10 @@ public class Pet {
 		this.person = person;
 	}
 	
+	@Override
+	public String toString() {
+		return "Person :"+Boolean.valueOf(person!=null)+" Pet name:"+getName()+" Age:"+getAge();
+	}
 	
 
 }

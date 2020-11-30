@@ -1,13 +1,16 @@
-package com.rabo.demo.util;
+package com.rabo.demo.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.rabo.demo.constants.ResponseMessage;
 import com.rabo.demo.exception.RecordNotFoundException;
 import com.rabo.demo.model.Person;
 import com.rabo.demo.model.PersonAddress;
@@ -21,12 +24,11 @@ public class PersonService {
 	@Autowired
 	public PersonRepository personRepo;
 	
-	@Autowired
-	public PetRepository petRepo;
+
 	
-	public Iterable<Person> getPersonList() {
+	public List<Person> getPersonList() {
 		System.out.println("Inside GET MApping");
-		return personRepo.findAll();
+		return (List<Person>) personRepo.findAll();
 	}
 	
 	public String addPerson(Person[] person) {
@@ -35,10 +37,10 @@ public class PersonService {
 			for (Person per : person) {
 				personRepo.save(per);
 			}
-			return "Record Saved Successfully";
+			return ResponseMessage.ADDED;
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			return "Entered Record already available. Try saving Unique Name.";
+			return ResponseMessage.ADD_FAILED;
 		}
 
 	}
@@ -50,7 +52,7 @@ public class PersonService {
 	
 	public String updateAddress(PersonAddress partialUpdate) {
 		System.out.println("Inside Patch Handler");
-		int id = partialUpdate.getPer_id();
+		int id = partialUpdate.getId();
 		Optional<Person> person = Optional
 				.of(personRepo.findById(id).orElseThrow(() -> new RecordNotFoundException(id)));
 		if (person.isPresent()) {
@@ -59,27 +61,32 @@ public class PersonService {
 			personRepo.save(per);
 		}
 
-		return "Updated Successfully";
+		return ResponseMessage.UPDATED;
 	}
 	
 	public String deleteRecordById(int id) {
+		String result ;
+		Optional<Person> per = getById(id);
+		if(per.isPresent()) {
 		personRepo.deleteById(id);
-		return "Deleted Record Successfully";
+		result = ResponseMessage.DELETED;
+		}else
+		{
+			result = ResponseMessage.DELETE_FAILED;
+		}
+		return result;
 	}
 	
 	public String deleteAllRecord() {
 		personRepo.deleteAll();
-		return "Deleted all record successfully";
+		return ResponseMessage.DELETE_ALL_SUCCESS;
 	}
 	
-	public List<Person> getRecordByName(String name) {
-		String firstname = name;
-		String lastname = name;
+	public List<Person> getRecordByName(String firstname, String lastname) {
+		
 		Optional<List<Person>> per = null;
-		if (name.contains(" ")) {
-			String[] names = name.split(" ");
-			firstname = names[0];
-			lastname = names[1];
+		if ((!StringUtils.isEmpty(firstname) && !StringUtils.isEmpty(lastname))) {
+			
 			per = Optional.of(personRepo.findByLastnameAndFirstnameAllIgnoreCase(lastname, firstname)
 					.orElseThrow(() -> new RecordNotFoundException()));
 		} else {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,14 +24,14 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = { "first_name", "last_name" }))
-public class Person {
+public class Person implements java.io.Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqGen")
 	@SequenceGenerator(name = "seqGen", initialValue = 1, allocationSize = 10, sequenceName = "PER_SEQ")
 //	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "PERSON_ID")
-	public int per_id;
+	public int id;
 
 	@Column(name = "FIRST_NAME")
 	public String firstname;
@@ -45,9 +46,9 @@ public class Person {
 	public String address;
 	
 //	@OneToMany(mappedBy = "person")
-	@OneToMany(targetEntity = Pet.class)
+	@OneToMany(targetEntity=Pet.class, fetch = FetchType.EAGER)
 	@Cascade({CascadeType.ALL})
-	@JoinColumn(name = "PERSON_ID")
+	@JoinColumn(name = "PERSON_ID", nullable = false, insertable=false, updatable = false)
 	@JsonManagedReference
 	public List<Pet> petList = new ArrayList<>();
 	
@@ -55,44 +56,49 @@ public class Person {
 		
 	}
 
-	public int getPer_id() {
-		return per_id;
+	public int getId() {
+		return id;
 	}
 
-	public void setPer_id(int per_id) {
-		this.per_id = per_id;
+	public Person setId(int per_id) {
+		this.id = per_id;
+		return this;
 	}
 
 	public String getFirstname() {
 		return firstname;
 	}
 
-	public void setFirstname(String firstname) {
+	public Person setFirstname(String firstname) {
 		this.firstname = firstname;
+		return this;
 	}
 
 	public String getLastname() {
 		return lastname;
 	}
 
-	public void setLastname(String lastname) {
+	public Person setLastname(String lastname) {
 		this.lastname = lastname;
+		return this;
 	}
 
 	public String getDob() {
 		return dob;
 	}
 
-	public void setDob(String dob) {
+	public Person setDob(String dob) {
 		this.dob = dob;
+		return this;
 	}
 
 	public String getAddress() {
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public Person setAddress(String address) {
 		this.address = address;
+		return this;
 	}
 
 	public List<Pet> getPetList() {
@@ -103,5 +109,11 @@ public class Person {
 		this.petList = petList;
 	}
 
+	
+	@Override 
+	public String toString() { 
+		return getId()+" "+getFirstname() + " "+getLastname()+" "+getAddress()+" "+getDob();
+ }
+	 
 	
 }
