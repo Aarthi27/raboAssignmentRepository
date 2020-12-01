@@ -30,34 +30,33 @@ public class PetController {
 	private PetService petService;
 	
 
-	@GetMapping("/pets")
+	@GetMapping(MappingURL.PET_GET_ALL)
 	public Iterable<Pet> getPetList(){
 		return petService.getPetList();
 	}
 	
-	@PostMapping("/pet")
+	@PostMapping(MappingURL.PET_ADD)
 	public String addPet(@RequestBody Map<String,Object> map) {
 		Pet pet = new Pet();
 		pet = getPetObj(map);
 		return petService.addPet(new Pet[] {pet});
 	}
 	
-	@PutMapping("/pet")
+	@PutMapping(MappingURL.PET_UPDATE)
 	public String updatePet(@RequestBody Map<String,Object> map) {
-		Pet pet = new Pet();
-		pet.setPet_id(Integer.valueOf((map.get("pet_id")).toString()));
-		pet = getPetObj(map);
+		Pet pet = getPetObj(map);
+		pet.setPet_id(Integer.valueOf(map.get("pet_id").toString()));
 		String message = petService.updatePet(pet);
 		return message;
 	}
 	
-	@DeleteMapping("/pet")
+	@DeleteMapping(MappingURL.PET_DELETE_ALL)
 	public String deleteAllRecord() {
 		String message = petService.deleteAllRecord();
 		return message;
 	}
 	
-	@GetMapping("/deletePetById/{id}")
+	@GetMapping(MappingURL.PET_DELETE_BY_ID)
 	public String deleteById(@PathVariable("id") int id) {
 		return petService.deleteRecordById(id);
 
@@ -68,7 +67,7 @@ public class PetController {
 		pet.setAge(Integer.valueOf(map.get("age").toString()));
 		pet.setName(map.get("name").toString());
 		
-		ResponseEntity<Person> responsePerson = new RestTemplate().exchange("http://localhost:8080/persondetails"+MappingURL.GET_BY_ID,HttpMethod.GET,null,new ParameterizedTypeReference<Person>() {
+		ResponseEntity<Person> responsePerson = new RestTemplate().exchange("http://localhost:8080/persondetails"+MappingURL.PERSON_GET_BY_ID,HttpMethod.GET,null,new ParameterizedTypeReference<Person>() {
 		}, map.get("person_id").toString());
 		
 		pet.setPerson(responsePerson.getBody());

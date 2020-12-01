@@ -32,36 +32,36 @@ public class PersonController {
 	private static final String url="sdfsd";
 
 //	@RequestMapping(value = "/getPersonList", method = RequestMethod.GET)
-	@GetMapping(MappingURL.GET_ALL)
+	@GetMapping(MappingURL.PERSON_GET_ALL)
 	public ResponseEntity<List<Person>> getPersonList() {
 		System.out.println("Inside GET MApping");
 		return new ResponseEntity<List<Person>>(personService.getPersonList(), null,HttpStatus.OK);
 	}
 
-	@PostMapping(MappingURL.ADD)
+	@PostMapping(MappingURL.PERSON_ADD)
 	public String addPerson(@RequestBody Person[] person) {
 		String message = personService.addPerson(person);
 		return message;
 	}
 
-	@GetMapping(MappingURL.GET_BY_ID)
+	@GetMapping(MappingURL.PERSON_GET_BY_ID)
 	public ResponseEntity<Person> getById(@PathVariable("id") int id) {
 		Optional<Person> opPerson =personService.getById(id);
 		return new ResponseEntity<Person>(opPerson.get(), null,HttpStatus.OK);
 	}
 
-	@PatchMapping(MappingURL.UPDATE) // works with even @PutMapping
+	@PatchMapping(MappingURL.PERSON_UPDATE) // works with even @PutMapping
 	public String updateAddress(@RequestBody PersonAddress partialUpdate) {
 		String message = personService.updateAddress(partialUpdate);
 		return message;
 	}
 
-	@DeleteMapping(MappingURL.DELETE_BY_ID)
+	@DeleteMapping(MappingURL.PERSON_DELETE_BY_ID)
 	public String deleteById(@PathVariable("id") int id) {
 		return personService.deleteRecordById(id);
 	}
 
-	@DeleteMapping(MappingURL.DELETE_ALL)
+	@DeleteMapping(MappingURL.PERSON_DELETE_ALL)
 	public String deleteAllRecord() {
 		return personService.deleteAllRecord();
 	}
@@ -72,7 +72,7 @@ public class PersonController {
 //		return personList;
 //	}
 	
-	@GetMapping(MappingURL.SEARCH_BY_NAME)
+	@GetMapping(MappingURL.PERSON_SEARCH_BY_NAME)
 	public ResponseEntity<List<Person>> getByName(@RequestParam(name = "firstName") String firstname,
 								  @RequestParam(name = "lastName") String lastname) {
 		List<Person> personList = personService.getRecordByName(firstname, lastname);

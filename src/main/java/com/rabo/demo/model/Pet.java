@@ -67,7 +67,7 @@ public class Pet {
 	
 	@Override
 	public String toString() {
-		return "Person :"+Boolean.valueOf(person!=null)+" Pet name:"+getName()+" Age:"+getAge();
+		return "Pet Id :"+getPet_id()+" name:"+getName()+" Age:"+getAge();
 	}
 	
 
