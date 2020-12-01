@@ -31,7 +31,7 @@ public class Pet {
 	@Column(name = "AGE")
 	public int age;
 	
-	@ManyToOne(cascade = CascadeType.MERGE, optional=false)
+	@ManyToOne( optional=false)
 	@JoinColumn(name = "PERSON_ID")
 //	@JsonIgnore
 	@JsonBackReference
