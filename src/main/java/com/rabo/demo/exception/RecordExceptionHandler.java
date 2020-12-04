@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class RecordExceptionHandler {
-	
+
 	@ResponseBody
 	@ExceptionHandler(RecordNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)

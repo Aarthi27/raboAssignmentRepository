@@ -3,9 +3,9 @@ package com.rabo.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,23 +13,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
 @Table(name = "person", uniqueConstraints = @UniqueConstraint(columnNames = { "first_name", "last_name" }))
-public class Person implements java.io.Serializable{
+public class Person implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqGen")
 	@SequenceGenerator(name = "seqGen", initialValue = 1, allocationSize = 10, sequenceName = "PER_SEQ")
-//	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "PERSON_ID")
 	public int id;
 
@@ -44,16 +40,18 @@ public class Person implements java.io.Serializable{
 
 	@Column(name = "ADDRESS")
 	public String address;
-	
-//	@OneToMany(mappedBy = "person")
-	@OneToMany(targetEntity=Pet.class, fetch = FetchType.EAGER)
-	@Cascade({CascadeType.ALL})
-	@JoinColumn(name = "PERSON_ID", nullable = false, insertable=false, updatable = false)
-	@JsonManagedReference
-	public List<Pet> petList = new ArrayList<>();
-	
+
+	@OneToMany(targetEntity = PersonPetMapping.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = "person_id", referencedColumnName = "PERSON_ID")
+	@JsonIgnore
+	public List<PersonPetMapping> personPetLinkList = new ArrayList<>();
+
+	@Transient
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	private List<Pet> petList = new ArrayList<>();
+
 	public Person() {
-		
+
 	}
 
 	public int getId() {
@@ -101,6 +99,10 @@ public class Person implements java.io.Serializable{
 		return this;
 	}
 
+	public List<PersonPetMapping> getPersonPetLinkList() {
+		return personPetLinkList;
+	}
+
 	public List<Pet> getPetList() {
 		return petList;
 	}
@@ -109,11 +111,13 @@ public class Person implements java.io.Serializable{
 		this.petList = petList;
 	}
 
-	
-	@Override 
-	public String toString() { 
-		return getId()+" "+getFirstname() + " "+getLastname()+" "+getAddress()+" "+getDob();
- }
-	 
-	
+	public void setPersonPetLinkList(List<PersonPetMapping> personPetLinkList) {
+		this.personPetLinkList = personPetLinkList;
+	}
+
+	@Override
+	public String toString() {
+		return getId() + " " + getFirstname() + " " + getLastname() + " " + getAddress() + " " + getDob();
+	}
+
 }

@@ -1,8 +1,6 @@
 package com.rabo.demo;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +15,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestClientException;
@@ -26,7 +25,6 @@ import com.rabo.demo.constants.MappingURL;
 import com.rabo.demo.constants.ResponseMessage;
 import com.rabo.demo.model.Person;
 import com.rabo.demo.model.PersonAddress;
-import com.rabo.demo.model.Pet;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -87,11 +85,11 @@ class PersonControllerTest {
 
 	@Test
 	public void testUpdateAddressService() throws Exception {
+		restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 		PersonAddress address = new PersonAddress();
 		address.setAddress("Pondicherry");
 		address.setId(searchByName("Aarthi", null).get(0).getId());
 		String result = restTemplate.patchForObject(getPersonURL(MappingURL.PERSON_UPDATE), address, String.class);
-//		String result = restTemplate.postForObject(getPersonURL(MappingURL.UPDATE), address, String.class);
 		Assert.assertEquals(ResponseMessage.UPDATED, result);
 
 		Person person = searchByName("Aarthi", null).get(0);
@@ -125,10 +123,6 @@ class PersonControllerTest {
 		Assert.assertThrows(RestClientException.class, () -> searchByName("ABC", "XYZ"));
 	}
 
-	
-	
-	
-
 	private List<Person> searchByName(String firstName, String lastName) {
 
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder
@@ -139,9 +133,6 @@ class PersonControllerTest {
 				HttpMethod.GET, null, new ParameterizedTypeReference<List<Person>>() {
 				});
 
-//		ResponseEntity<List<Person>> listPersonResponse = restTemplate.exchange(getPersonURL(MappingURL.SEARCH_BY_NAME),
-//				HttpMethod.GET, null, new ParameterizedTypeReference<List<Person>>() {
-//				}, params);
 		return listPersonResponse.getBody();
 	}
 

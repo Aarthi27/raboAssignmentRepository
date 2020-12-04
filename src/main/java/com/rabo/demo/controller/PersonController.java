@@ -1,9 +1,12 @@
 package com.rabo.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.rabo.demo.constants.MappingURL;
 import com.rabo.demo.model.Person;
 import com.rabo.demo.model.PersonAddress;
+import com.rabo.demo.model.PersonPetMapping;
+import com.rabo.demo.model.Pet;
 import com.rabo.demo.service.PersonService;
 
 @RestController
@@ -28,14 +34,14 @@ public class PersonController {
 
 	@Autowired
 	private PersonService personService;
-	
-	private static final String url="sdfsd";
+
+	private static final String url = "sdfsd";
 
 //	@RequestMapping(value = "/getPersonList", method = RequestMethod.GET)
 	@GetMapping(MappingURL.PERSON_GET_ALL)
 	public ResponseEntity<List<Person>> getPersonList() {
 		System.out.println("Inside GET MApping");
-		return new ResponseEntity<List<Person>>(personService.getPersonList(), null,HttpStatus.OK);
+		return new ResponseEntity<List<Person>>(personService.getPersonList(), null, HttpStatus.OK);
 	}
 
 	@PostMapping(MappingURL.PERSON_ADD)
@@ -46,8 +52,8 @@ public class PersonController {
 
 	@GetMapping(MappingURL.PERSON_GET_BY_ID)
 	public ResponseEntity<Person> getById(@PathVariable("id") int id) {
-		Optional<Person> opPerson =personService.getById(id);
-		return new ResponseEntity<Person>(opPerson.get(), null,HttpStatus.OK);
+		Optional<Person> opPerson = personService.getById(id);
+		return new ResponseEntity<Person>(opPerson.get(), null, HttpStatus.OK);
 	}
 
 	@PatchMapping(MappingURL.PERSON_UPDATE) // works with even @PutMapping
@@ -71,12 +77,19 @@ public class PersonController {
 //		List<Person> personList = personService.getRecordByName(name);
 //		return personList;
 //	}
-	
+
 	@GetMapping(MappingURL.PERSON_SEARCH_BY_NAME)
 	public ResponseEntity<List<Person>> getByName(@RequestParam(name = "firstName") String firstname,
-								  @RequestParam(name = "lastName") String lastname) {
+			@RequestParam(name = "lastName") String lastname) {
 		List<Person> personList = personService.getRecordByName(firstname, lastname);
-		return new ResponseEntity<List<Person>>(personList, null,HttpStatus.OK);
+		return new ResponseEntity<List<Person>>(personList, null, HttpStatus.OK);
 	}
-	
+
+	@PostMapping(MappingURL.PERSON_PET_MAPPING)
+	public String linkPersonPet(@RequestBody Map<String, Object> map) {
+		String msg = personService.linkPersonToPet(map);
+
+		return msg;
+	}
+
 }

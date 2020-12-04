@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.rabo.demo.model.Pet;
 
 @Repository
-public interface PetRepository extends CrudRepository<Pet, Integer>{
+public interface PetRepository extends CrudRepository<Pet, Integer> {
 
 }
